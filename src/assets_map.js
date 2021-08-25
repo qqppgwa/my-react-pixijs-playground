@@ -1,11 +1,11 @@
 /** 3D 噴射機 Assets */
 export const JET_ASSETS = [
   {
-    key: "star",
+    key: 'star',
     url: `${process.env.PUBLIC_URL}/images/star.png`,
   },
   {
-    key: "starConflict",
+    key: 'starConflict',
     url: `${process.env.PUBLIC_URL}/assets/star_conflict/scene.gltf`,
   },
 ];
@@ -14,7 +14,7 @@ export const JET_ASSETS = [
  * 卡牌火焰 Card Fire Assets
  */
 export const CARD_FIRE_ASSETS = [
-  { key: "cardFire", url: `${process.env.PUBLIC_URL}/images/card-fire.png` },
+  { key: 'cardFire', url: `${process.env.PUBLIC_URL}/images/card-fire.png` },
 ];
 
 /**
@@ -22,7 +22,7 @@ export const CARD_FIRE_ASSETS = [
  */
 export const TOWN_ASSETS = [
   {
-    key: "town_grass",
+    key: 'town_grass',
     url: `${process.env.PUBLIC_URL}/assets/town/grass.png`,
   },
 ];

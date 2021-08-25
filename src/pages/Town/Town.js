@@ -1,6 +1,6 @@
-import { TOWN_ASSETS } from "assets_map";
-import Stage from "components/Stage";
-import GrassSprite from "./components/GrassSprite";
+import { TOWN_ASSETS } from 'assets_map';
+import Stage from 'components/Stage';
+import GrassSprite from './components/GrassSprite';
 
 const Town = () => {
   return (
