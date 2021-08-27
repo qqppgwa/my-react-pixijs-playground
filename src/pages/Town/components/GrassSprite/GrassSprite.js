@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import inRange from 'lodash/inRange';
 import { Rectangle } from 'pixi.js';
 import { useApp, Sprite, Container } from '@inlet/react-pixi';
 import {
@@ -8,45 +9,67 @@ import {
   tilewidth,
   tileheight,
   tilesets,
-} from '../../map2.json';
+} from '../../map_multi_sets.json';
 
 const GrassSprite = () => {
   const app = useApp();
+
   const grassTextureMap = useRef({});
-  const grassTexture = app.loader.resources.town_grass.texture;
-  const tileSetCols = tilesets[0].columns;
 
-  const tiles = layers[0].data.map((num, index) => {
-    let texture;
+  const getTileSetIndex = (num) => {
+    const index = tilesets.findIndex((set) => {
+      const { firstgid, tilecount } = set;
 
-    /** set rectangle */
-    const x = ((num - 1) % tileSetCols) * tilewidth;
-    const y = tileheight * Math.floor((num - 1) / tileSetCols);
-    const tile = new Rectangle(x, y, tilewidth, tileheight);
+      return inRange(num, firstgid, firstgid + tilecount);
+    });
 
-    /**
-     * handle texture object
-     */
-    const textureKey = `${x}${y}`;
-    if (grassTextureMap.current[textureKey]) {
-      // already exist
-      texture = grassTextureMap.current[textureKey];
-    } else {
-      // not exist, clone and store
-      const cloned = grassTexture.clone();
-      cloned.frame = tile;
+    return index;
+  };
 
-      grassTextureMap.current[textureKey] = cloned;
-      texture = cloned;
-    }
+  const imagesLayers = layers.map((layer, index) => {
+    const tiles = layer.data.map((tileIndex, index) => {
+      let texture;
 
-    return (
-      <Sprite
-        x={(index % width) * tilewidth}
-        y={tileheight * Math.floor(index / width)}
-        texture={texture}
-      ></Sprite>
-    );
+      if (tileIndex === 0) return null;
+
+      const { columns: tileSetCols, firstgid, name } = tilesets[
+        getTileSetIndex(tileIndex)
+      ];
+
+      /** set rectangle */
+      const x = ((tileIndex - firstgid) % tileSetCols) * tilewidth;
+      const y = tileheight * Math.floor((tileIndex - firstgid) / tileSetCols);
+      const tile = new Rectangle(x, y, tilewidth, tileheight);
+
+      /**
+       * handle texture object
+       */
+
+      const grassTexture = app.loader.resources[`town_${name}`].texture;
+
+      const textureKey = `${name}_${x}${y}`;
+      if (grassTextureMap.current[textureKey]) {
+        // already exist
+        texture = grassTextureMap.current[textureKey];
+      } else {
+        // not exist, clone and store
+        const cloned = grassTexture.clone();
+
+        cloned.frame = tile;
+        grassTextureMap.current[textureKey] = cloned;
+        texture = cloned;
+      }
+
+      return (
+        <Sprite
+          x={(index % width) * tilewidth}
+          y={tileheight * Math.floor(index / width)}
+          texture={texture}
+          key={index}
+        />
+      );
+    });
+    return tiles;
   });
 
   return (
@@ -55,8 +78,8 @@ const GrassSprite = () => {
       height={height * tileheight}
       anchor={0.5}
     >
-      {tiles.map((tile) => {
-        return tile;
+      {imagesLayers.map((layer) => {
+        return layer;
       })}
     </Container>
   );
