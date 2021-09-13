@@ -26,7 +26,7 @@ const GrassSprite = () => {
     return index;
   };
 
-  const imagesLayers = layers.map((layer, index) => {
+  const imagesLayers = layers.map((layer) => {
     const tiles = layer.data.map((tileIndex, index) => {
       let texture;
 
